@@ -4,6 +4,14 @@ For earlier releases, see [GitHub Releases](https://github.com/zcashlabs/thus-sp
 
 ## Unreleased
 
+- **Docker failures name the failed command:** A Docker invocation that exited
+  nonzero without printing anything produced an empty error message, so a
+  launcher read that goes through Docker could report a blank reason with no
+  indication of which command had failed. The failed command and its exit
+  status are now always included, and Docker's own stderr is still retained
+  when it has something to say.
+  [#370](https://github.com/zcashlabs/thus-spoke-zakura/issues/370)
+
 ## v0.4.0
 
 ![Thus Spoke Zakura v0.4.0 release artwork](assets/images/release-v0.4.0.png)
