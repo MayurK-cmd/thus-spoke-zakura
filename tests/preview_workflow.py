@@ -1034,6 +1034,24 @@ class CommandTests(unittest.TestCase):
         blob = preview.read_status_blob({"body": body})
         self.assertEqual(blob["approved"]["sha"], "a" * 40)
 
+    def test_report_drops_the_address_of_a_preview_that_is_gone(self):
+        self.client.comment_lists[412] = [
+            status_comment(412, {"sha": "a" * 40, "url": "https://pr-412.example.com"})
+        ]
+        self.run_cli(*["report", "--pr", "412", "--state", "removed", "--sha", "a" * 40])
+        body = self.client.updated[0][1]
+        self.assertNotIn("https://pr-412.example.com", body)
+
+    def test_report_drops_the_address_while_waiting_for_an_approval(self):
+        self.client.comment_lists[412] = [
+            status_comment(412, {"sha": "a" * 40, "url": "https://pr-412.example.com"})
+        ]
+        self.run_cli(
+            *["report", "--pr", "412", "--state", "await-approval", "--sha", "b" * 40]
+        )
+        body = self.client.updated[0][1]
+        self.assertNotIn("https://pr-412.example.com", body)
+
     def test_teardown_clears_the_state(self):
         preview.write_state(
             self.root, preview.PreviewState(pr=412, instance=preview.instance_name(412))

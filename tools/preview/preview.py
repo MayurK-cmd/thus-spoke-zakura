@@ -1143,6 +1143,18 @@ def command_configure(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _carried_url(blob: dict[str, Any], state: str) -> str:
+    """The address of a preview that is still the one a comment talks about.
+
+    A preview that waits for an approval, that was denied, or that was
+    removed has no address a reviewer should open, so the old one is not
+    carried over.
+    """
+    if state in ("await-approval", "denied", "removed"):
+        return ""
+    return str(blob.get("url", ""))
+
+
 def command_report(arguments: argparse.Namespace) -> int:
     """Writes the status comment of a preview."""
     client = _client()
@@ -1171,7 +1183,7 @@ def command_report(arguments: argparse.Namespace) -> int:
         sha=arguments.sha or str(blob.get("sha", "")),
         instance=instance_name(number),
         approved_by=approval.by if approval else "",
-        url=arguments.url or str(blob.get("url", "")),
+        url=arguments.url or _carried_url(blob, state),
     )
     body = status_comment_body(
         plan, url=plan.url, error=arguments.error or "", state=state, approval=approval
