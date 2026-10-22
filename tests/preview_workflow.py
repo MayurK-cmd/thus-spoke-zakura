@@ -429,6 +429,18 @@ class StatusCommentTests(unittest.TestCase):
         )
         self.assertIn("the image build failed", body)
 
+    def test_body_explains_how_to_approve(self):
+        body = preview.status_comment_body(
+            preview.Plan(action="await-approval", pr=412, sha="b" * 40), state="await-approval"
+        )
+        self.assertIn("/preview approve", body)
+
+    def test_body_reports_a_withdrawn_approval(self):
+        body = preview.status_comment_body(
+            preview.Plan(action="deny", pr=412, sha="b" * 40), state="denied"
+        )
+        self.assertIn("withdrawn", body)
+
     def test_blob_of_a_comment_without_a_marker(self):
         self.assertEqual(preview.read_status_blob({"body": "hello"}), {})
         self.assertEqual(preview.read_status_blob(None), {})

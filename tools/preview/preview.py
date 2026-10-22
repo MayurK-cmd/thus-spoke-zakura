@@ -763,6 +763,13 @@ def status_comment_body(
     body = f"{marker}\n## Pull request preview\n\n| | |\n| --- | --- |\n{table}\n"
     if error:
         body += f"\nThe preview could not be deployed.\n\n```\n{error}\n```\n"
+    elif state == "await-approval":
+        body += (
+            "\nA maintainer has to comment `/preview approve` before this commit is "
+            "deployed. A later commit needs a later approval.\n"
+        )
+    elif state == "denied":
+        body += "\nThe approval was withdrawn, so nothing is deployed.\n"
     else:
         body += (
             "\nThis preview is a throwaway Regtest environment. It is isolated from "

@@ -155,7 +155,7 @@ and a maintainer sets them once.
 | `PREVIEW_BASE_URL` | The address template, with `{pr}` for the pull request number. Required. |
 | `PREVIEW_PROXY_DIR` | The directory the ingress reads its route files from. |
 | `PREVIEW_ROUTE_TEMPLATE` | The route file body, with `{host}`, `{port}`, `{pr}`, and `{instance}`. The default suits Caddy. |
-| `PREVIEW_PROXY_RELOAD` | The command that asks the ingress to reload. |
+| `PREVIEW_PROXY_RELOAD` | The command that asks the ingress to reload. It runs as a shell command on the preview host, so only a maintainer may set it. |
 
 `THS_PREVIEW_STATE_DIR` on the preview host names the directory that holds
 one state file per preview. It defaults to
